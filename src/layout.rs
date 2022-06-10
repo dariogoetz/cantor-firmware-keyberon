@@ -24,6 +24,14 @@ const CTRL_TAB: Action = HoldTap {
     tap: &k(Tab),
 };
 
+const ALT_ENT: Action = HoldTap {
+    timeout: TIMEOUT,
+    tap_hold_interval: 0,
+    config: HoldTapConfig::Default,
+    hold: &k(LAlt),
+    tap: &k(Enter),
+};
+
 const PPN: Action = HoldTap {
     timeout: TIMEOUT,
     tap_hold_interval: 0,
@@ -49,7 +57,7 @@ pub static LAYERS: keyberon::layout::Layers<12, 4, 5, ()> = keyberon::layout::la
         [ J     Y     L     U     A     Q     W     B     D     G     Z       -  ],
         [(1)    C     R     I     E     O     M     N     T     S     H      (1) ],
         [LGui   V     X LBracket Quote  ;     P     F     ,     .     K      LGui],
-        [ t     t   t  (2) LShift {CTRL_TAB} Enter {SHIFT_SP} (2) t   t      t ],
+        [ t     t t (2) LShift {CTRL_TAB} {ALT_ENT} {SHIFT_SP} (2) t  t      t   ],
     }{
         [ t {a!(E)}     {s!(Slash)} {a!(Kb8)}         {a!(Kb9)}      Grave          {s!(Kb1)}   NonUsBslash {s!(NonUsBslash)} {s!(Kb0)}       {s!(Kb6)}   [RAlt Q] ],
         [ t {a!(Minus)} {s!(Kb7)}   {a!(Kb7)}         {a!(Kb0)}      {s!(RBracket)} {s!(Minus)} {s!(Kb8)}   {s!(Kb9)}         Slash           {s!(Dot)}   t],
