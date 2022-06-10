@@ -11,6 +11,7 @@ curl https://sh.rustup.rs -sSf | sh
 rustup target add thumbv7em-none-eabihf
 rustup component add llvm-tools-preview
 cargo install cargo-binutils
+cargo install flip-link
 ```
 
 Compile the firmware
