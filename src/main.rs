@@ -194,7 +194,12 @@ mod app {
         // cx.local.timer.clear_interrupt(hal::timer::Event::Update);
 
         // send (mirrored) event to other half
-        for event in cx.local.debouncer.events(cx.local.matrix.get().unwrap()) {
+        for event in cx
+            .local
+            .debouncer
+            .events(cx.local.matrix.get().unwrap())
+            .map(transform_keypress_coordinates)
+        {
             for &b in &serialize(event) {
                 block!(cx.local.serial_tx.write(b)).unwrap();
             }
@@ -250,8 +255,7 @@ mod app {
             if cx.local.serial_buf[3] == b'\n' {
                 if let Ok(event) = deserialize(&cx.local.serial_buf[..]) {
                     defmt::info!("Received message via USART");
-                    let transformed_event = transform_keypress_right(event);
-                    register_keyboard_event::spawn(transformed_event).unwrap()
+                    register_keyboard_event::spawn(event).unwrap()
                 }
             }
         }
@@ -273,9 +277,15 @@ mod app {
     }
 
     /// Transform key events from other keyboard half by mirroring coordinates
-    fn transform_keypress_right(e: Event) -> Event {
-        // transformation for events for other half
+    #[cfg(feature = "right_half")]
+    fn transform_keypress_coordinates(e: Event) -> Event {
+        // mirror coordinates for events for right half
         e.transform(|i, j| (i, 11 - j))
+    }
+
+    #[cfg(not(feature = "right_half"))]
+    fn transform_keypress_coordinates(e: Event) -> Event {
+        e
     }
 
     // USB events

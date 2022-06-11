@@ -14,11 +14,15 @@ cargo install cargo-binutils
 cargo install flip-link
 ```
 
-Compile the firmware
-
+Compile the firmware for the left half with
 ```shell
 cargo objcopy --release -- -O binary keyberon.bin
 ```
+and for the right half with
+```shell
+cargo objcopy --features right_half --release -- -O binary keyberon.bin
+```
+
 
 ## Flashing using DFU
 
