@@ -7,7 +7,6 @@ use stm32f4xx_hal as _;
 
 use panic_probe as _;
 
-pub mod direct_pin_matrix;
 pub mod layout;
 
 // same panicking *behavior* as `panic-probe` but doesn't print a panic message

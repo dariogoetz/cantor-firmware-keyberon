@@ -2,7 +2,6 @@
 #![no_std]
 
 use cantor_firmware_keyberon as _; // global logger + panicking-behavior + memory layout
-use cantor_firmware_keyberon::direct_pin_matrix::DirectPinMatrix;
 use cantor_firmware_keyberon::layout::LAYERS;
 use hal::gpio::{EPin, Input};
 use hal::otg_fs::{UsbBusType, USB};
@@ -11,6 +10,7 @@ use hal::serial;
 use keyberon::debounce::Debouncer;
 use keyberon::key_code::KbHidReport;
 use keyberon::layout::{CustomEvent, Event, Layout};
+use keyberon::matrix::DirectPinMatrix;
 use nb::block;
 use stm32f4xx_hal as hal;
 use usb_device::bus::UsbBusAllocator;
