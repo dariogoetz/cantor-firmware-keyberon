@@ -6,7 +6,7 @@ type Action = keyberon::action::Action<()>;
 static DLAYER: Action = Action::DefaultLayer(0);
 static QWERTZLAYER: Action = Action::DefaultLayer(4);
 
-const TIMEOUT: u16 = 300;
+const TIMEOUT: u16 = 200;
 
 const SHIFT_SP: Action = HoldTap {
     timeout: TIMEOUT,
