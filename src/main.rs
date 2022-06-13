@@ -1,8 +1,8 @@
 #![no_main]
 #![no_std]
 
-use cantor_firmware_keyberon as _; // global logger + panicking-behavior + memory layout
-use cantor_firmware_keyberon::layout::LAYERS;
+use core::sync::atomic::{AtomicUsize, Ordering};
+use defmt_rtt as _; // global logger
 use hal::gpio::{EPin, Input};
 use hal::otg_fs::{UsbBusType, USB};
 use hal::prelude::*;
@@ -16,6 +16,32 @@ use stm32f4xx_hal as hal;
 use usb_device::bus::UsbBusAllocator;
 use usb_device::class::UsbClass as _;
 use usb_device::device::UsbDeviceState;
+
+use panic_probe as _;
+
+pub mod layout;
+
+// same panicking *behavior* as `panic-probe` but doesn't print a panic message
+// this prevents the panic message being printed *twice* when `defmt::panic` is invoked
+#[defmt::panic_handler]
+fn panic() -> ! {
+    cortex_m::asm::udf()
+}
+
+static COUNT: AtomicUsize = AtomicUsize::new(0);
+defmt::timestamp!("{=usize}", {
+    // NOTE(no-CAS) `timestamps` runs with interrupts disabled
+    let n = COUNT.load(Ordering::Relaxed);
+    COUNT.store(n + 1, Ordering::Relaxed);
+    n
+});
+
+/// Terminates the application and makes `probe-run` exit with exit-code = 0
+pub fn exit() -> ! {
+    loop {
+        cortex_m::asm::bkpt();
+    }
+}
 
 type UsbClass = keyberon::Class<'static, UsbBusType, ()>;
 type UsbDevice = usb_device::device::UsbDevice<'static, UsbBusType>;
@@ -150,7 +176,7 @@ mod app {
                 // Initialization of shared resources go here
                 usb_dev,
                 usb_class,
-                layout: Layout::new(&LAYERS),
+                layout: Layout::new(&layout::LAYERS),
             },
             Local {
                 // Initialization of local resources go here
