@@ -69,7 +69,7 @@ pub static LAYERS: keyberon::layout::Layers<12, 4, 5, ()> = keyberon::layout::la
         [ t  Escape Tab    n    Enter  n      Kb0    Kb1 Kb2 Kb3 {s!(RBracket)} {s!(Kb7)}],
         [ t  t      t      t    t      t      LShift t   t   t   t              t],
     }{
-        [{Custom(())}  n    n     n     VolUp    n   F12  F7  F8  F9  n  n],
+        [{Custom(())}  n    n     n     VolUp    n   F12  F7  F8  F9  n  {Custom(())}],
         [t             n    n     n     {PPN}    n   F11  F4  F5  F6  n  t],
         [n             n    n     n     VolDown  n   F10  F1  F2  F3  n  n],
         [t             t    t     t     t        t   t    t   {QWERTZLAYER} t   t   t],
