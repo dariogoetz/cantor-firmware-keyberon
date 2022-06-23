@@ -182,7 +182,7 @@ mod app {
                 // Initialization of local resources go here
                 matrix: matrix.unwrap(),
                 timer,
-                debouncer: Debouncer::new([[false; 6]; 4], [[false; 6]; 4], 5),
+                debouncer: Debouncer::new([[false; 6]; 4], [[false; 6]; 4], 10),
                 serial_tx,
                 serial_rx,
                 serial_buf: [0; 4],
