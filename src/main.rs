@@ -82,8 +82,8 @@ mod app {
             .RCC
             .constrain()
             .cfgr
-            .use_hse(24.MHz()) // why do we use hse?
-            .sysclk(48.MHz())
+            .use_hse(25.MHz()) // why do we use hse?
+            .sysclk(42.MHz())
             .freeze();
 
         // get GPIO pins
