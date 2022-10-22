@@ -32,6 +32,19 @@ boot, and then release boot. Then flash it:
 dfu-util -a 0 --dfuse-address 0x08000000 -D keyberon.bin
 ```
 
+## Development
+Ensure that the debugging probe (e.g. STLink V2) has user access rights (see https://embedded-trainings.ferrous-systems.com/installation.html#linux-only-usb)
+
+```shell
+cargo install probe-run
+cargo install probe-rs-cli
+```
+
+Running the program with log output:
+```shell
+DEFMT_LOG=info cargo run
+```
+
 ## License
 
 Licensed under either of
