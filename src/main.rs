@@ -84,6 +84,7 @@ mod app {
             .cfgr
             .use_hse(25.MHz()) // why do we use hse?
             .sysclk(42.MHz())
+            .require_pll48clk()
             .freeze();
 
         // get GPIO pins
