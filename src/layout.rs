@@ -59,9 +59,9 @@ pub static LAYERS: keyberon::layout::Layers<12, 4, 5, ()> = keyberon::layout::la
         [LGui   V     X LBracket Quote  ;     P     F     ,     .     K      LGui],
         [ t     t t (2) LShift {CTRL_TAB} {ALT_ENT} {SHIFT_SP} (2) t  t      t   ],
     }{
-        [ t {a!(E)}     {s!(Slash)} {a!(Kb8)}         {a!(Kb9)}      Grave          {s!(Kb1)}   NonUsBslash {s!(NonUsBslash)} {s!(Kb0)}       {s!(Kb6)}   [RAlt Q] ],
+        [ t {a!(E)}     {s!(Slash)} {a!(Kb8)}         {a!(Kb9)}      Grave          {s!(Kb1)}   NonUsBslash {s!(NonUsBslash)} {s!(Kb0)}       {s!(Kb6)}   {a!(Q)} ],
         [ t {a!(Minus)} {s!(Kb7)}   {a!(Kb7)}         {a!(Kb0)}      {s!(RBracket)} {s!(Minus)} {s!(Kb8)}   {s!(Kb9)}         Slash           {s!(Dot)}   t],
-        [ t NonUsHash   {s!(Kb4)}   {a!(NonUsBslash)} {a!(RBracket)} Equal          RBracket    {s!(Kb5)}   {s!(Kb2)}         {s!(NonUsHash)} {s!(Comma)} t],
+        [ t NonUsHash   {s!(Kb4)}   {a!(NonUsBslash)} {a!(RBracket)} {s!(Equal)}    RBracket    {s!(Kb5)}   {s!(Kb2)}         {s!(NonUsHash)} {s!(Comma)} t],
         [ t t           t           (3)               t              t              t           t           (3)               t               t           t],
     }{
         [ t  PgUp   BSpace Up   Delete PgDown n      Kb7 Kb8 Kb9 RBracket Slash],
