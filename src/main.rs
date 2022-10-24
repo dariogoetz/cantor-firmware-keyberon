@@ -16,10 +16,19 @@ use stm32f4xx_hal as hal;
 use usb_device::bus::UsbBusAllocator;
 use usb_device::class::UsbClass as _;
 use usb_device::device::UsbDeviceState;
+use usb_device::prelude::*;
 
 use panic_probe as _;
 
 pub mod layout;
+
+/// USB VIP for a generic keyboard from
+/// https://github.com/obdev/v-usb/blob/master/usbdrv/USB-IDs-for-free.txt
+const VID: u16 = 0x16c0;
+
+/// USB PID for a generic keyboard from
+/// https://github.com/obdev/v-usb/blob/master/usbdrv/USB-IDs-for-free.txt
+const PID: u16 = 0x27db;
 
 // same panicking *behavior* as `panic-probe` but doesn't print a panic message
 // this prevents the panic message being printed *twice* when `defmt::panic` is invoked
@@ -111,9 +120,14 @@ mod app {
         unsafe {
             USB_BUS = Some(UsbBusType::new(usb, &mut EP_MEMORY));
         }
+
         let usb_bus = unsafe { USB_BUS.as_ref().unwrap() };
         let usb_class = keyberon::new_class(&usb_bus, ());
-        let usb_dev = keyberon::new_device(&usb_bus);
+        let usb_dev = UsbDeviceBuilder::new(usb_bus, UsbVidPid(VID, PID))
+            .manufacturer("Dario Götz")
+            .product("Dario Götz's 42-key split keyboard")
+            .serial_number(env!("CARGO_PKG_VERSION"))
+            .build();
 
         // Setup USART communication with other half
         let (pb6, pb7) = (gpiob.pb6, gpiob.pb7);
