@@ -83,7 +83,7 @@ mod app {
             .constrain()
             .cfgr
             .use_hse(25.MHz()) // why do we use hse?
-            .sysclk(42.MHz())
+            .sysclk(84.MHz())
             .require_pll48clk()
             .freeze();
 
