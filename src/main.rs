@@ -235,12 +235,6 @@ mod app {
         // or equivalently
         // cx.local.timer.clear_interrupt(hal::timer::Event::Update);
 
-        let tick = cx.shared.layout.tick();
-        match tick {
-            CustomEvent::Release(()) => unsafe { cortex_m::asm::bootload(0x1FFF0000 as _) },
-            _ => (),
-        }
-
         // send (mirrored) event to other half
         for event in cx
             .local
@@ -268,6 +262,12 @@ mod app {
     #[task(priority=1, shared=[usb_dev, usb_class, layout])]
     fn generate_keyboard_report(mut cx: generate_keyboard_report::Context) {
         // defmt::info!("Generating keyboard report");
+
+        let tick = cx.shared.layout.tick();
+        match tick {
+            CustomEvent::Release(()) => unsafe { cortex_m::asm::bootload(0x1FFF0000 as _) },
+            _ => (),
+        }
 
         if cx.shared.usb_dev.lock(|d| d.state()) != UsbDeviceState::Configured {
             return;
