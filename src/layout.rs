@@ -1,4 +1,4 @@
-use keyberon::action::{k, m, Action::*, HoldTapConfig};
+use keyberon::action::{k, m, Action::*, HoldTapAction, HoldTapConfig};
 use keyberon::key_code::KeyCode::*;
 
 type Action = keyberon::action::Action<()>;
@@ -8,46 +8,46 @@ static QWERTZLAYER: Action = Action::DefaultLayer(4);
 
 const TIMEOUT: u16 = 200;
 
-const SHIFT_SP: Action = HoldTap {
+const SHIFT_SP: Action = HoldTap(&HoldTapAction {
     timeout: TIMEOUT,
     tap_hold_interval: 0,
     config: HoldTapConfig::Default,
-    hold: &k(LShift),
-    tap: &k(Space),
-};
+    hold: k(LShift),
+    tap: k(Space),
+});
 
-const CTRL_TAB: Action = HoldTap {
+const CTRL_TAB: Action = HoldTap(&HoldTapAction {
     timeout: TIMEOUT,
     tap_hold_interval: 0,
     config: HoldTapConfig::Default,
-    hold: &k(LCtrl),
-    tap: &k(Tab),
-};
+    hold: k(LCtrl),
+    tap: k(Tab),
+});
 
-const ALT_ENT: Action = HoldTap {
+const ALT_ENT: Action = HoldTap(&HoldTapAction {
     timeout: TIMEOUT,
     tap_hold_interval: 0,
     config: HoldTapConfig::Default,
-    hold: &k(LAlt),
-    tap: &k(Enter),
-};
+    hold: k(LAlt),
+    tap: k(Enter),
+});
 
-const PPN: Action = HoldTap {
+const PPN: Action = HoldTap(&HoldTapAction {
     timeout: TIMEOUT,
     tap_hold_interval: 0,
     config: HoldTapConfig::Default,
-    hold: &k(MediaNextSong),
-    tap: &k(MediaPlayPause),
-};
+    hold: k(MediaNextSong),
+    tap: k(MediaPlayPause),
+});
 
 macro_rules! s {
     ($k:ident) => {
-        m(&[LShift, $k])
+        m(&[LShift, $k].as_slice())
     };
 }
 macro_rules! a {
     ($k:ident) => {
-        m(&[RAlt, $k])
+        m(&&[RAlt, $k].as_slice())
     };
 }
 
