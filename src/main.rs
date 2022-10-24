@@ -127,6 +127,7 @@ mod app {
             .manufacturer("Dario Götz")
             .product("Dario Götz's 42-key split keyboard")
             .serial_number(env!("CARGO_PKG_VERSION"))
+            .device_class(usbd_serial::USB_CLASS_CDC)
             .build();
 
         // Setup USART communication with other half
