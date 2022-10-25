@@ -91,7 +91,7 @@ mod app {
             .RCC
             .constrain()
             .cfgr
-            .use_hse(25.MHz()) // why do we use hse?
+            .use_hse(25.MHz())
             .sysclk(84.MHz())
             .require_pll48clk()
             .freeze();
@@ -127,7 +127,6 @@ mod app {
             .manufacturer("Dario Götz")
             .product("Dario Götz's 42-key split keyboard")
             .serial_number(env!("CARGO_PKG_VERSION"))
-            .device_class(usbd_serial::USB_CLASS_CDC)
             .build();
 
         // Setup USART communication with other half
@@ -218,50 +217,44 @@ mod app {
     /// Register a key press/release event with the layout (it will not be processed, yet)
     #[task(priority=1, capacity=8, shared=[layout])]
     fn register_keyboard_event(cx: register_keyboard_event::Context, event: Event) {
-        match event {
-            Event::Press(i, j) => defmt::info!("Registering press {} {}", i, j),
-            Event::Release(i, j) => defmt::info!("Registering release {} {}", i, j),
-        }
+        // match event {
+        //     Event::Press(i, j) => defmt::info!("Registering press {} {}", i, j),
+        //     Event::Release(i, j) => defmt::info!("Registering release {} {}", i, j),
+        // }
         cx.shared.layout.event(event)
     }
 
     /// Check all switches for their state, register corresponding events, and
     /// spawn generation of a USB keyboard report (including layout event processing)
-    #[task(binds=TIM2, priority=1, local=[debouncer, matrix, timer, serial_tx], shared=[layout])]
-    fn tick(cx: tick::Context) {
+    #[task(binds=TIM2, priority=1, local=[debouncer, matrix, timer, serial_tx], shared=[usb_dev, usb_class, layout])]
+    fn tick(mut cx: tick::Context) {
         // defmt::info!("Processing keyboard events");
+        let is_host = cx.shared.usb_dev.lock(|d| d.state()) == UsbDeviceState::Configured;
 
         cx.local.timer.wait().ok();
         // or equivalently
         // cx.local.timer.clear_interrupt(hal::timer::Event::Update);
 
-        // send (mirrored) event to other half
+        // scan keyboard
         for event in cx
             .local
             .debouncer
             .events(cx.local.matrix.get().unwrap())
             .map(transform_keypress_coordinates)
         {
-            for &b in &serialize(event) {
-                block!(cx.local.serial_tx.write(b)).unwrap();
+            // either register events or send to other half
+            if is_host {
+                cx.shared.layout.event(event)
+            } else {
+                for &b in &serialize(event) {
+                    block!(cx.local.serial_tx.write(b)).unwrap();
+                }
             }
-
-            match event {
-                Event::Press(i, j) => defmt::info!("Pressed {} {}", i, j),
-                Event::Release(i, j) => defmt::info!("Released {} {}", i, j),
-            }
-            register_keyboard_event::spawn(event).unwrap_or_else(|e| {
-                defmt::error!("Error spawning task (capacity exceeded?): {:?}", e.coord())
-            });
+            // match event {
+            //     Event::Press(i, j) => defmt::info!("Pressed {} {}", i, j),
+            //     Event::Release(i, j) => defmt::info!("Released {} {}", i, j),
+            // }
         }
-
-        generate_keyboard_report::spawn().unwrap();
-    }
-
-    /// Process layout events (tick) and generate USB keyboard report
-    #[task(priority=1, shared=[usb_dev, usb_class, layout])]
-    fn generate_keyboard_report(mut cx: generate_keyboard_report::Context) {
-        // defmt::info!("Generating keyboard report");
 
         let tick = cx.shared.layout.tick();
         match tick {
@@ -269,22 +262,21 @@ mod app {
             _ => (),
         }
 
-        if cx.shared.usb_dev.lock(|d| d.state()) != UsbDeviceState::Configured {
-            return;
+        // if this is the USB-side, send a USB keyboard report
+        if is_host {
+            let report: KbHidReport = cx.shared.layout.keycodes().collect();
+            if cx
+                .shared
+                .usb_class
+                .lock(|k| k.device_mut().set_keyboard_report(report.clone()))
+            {
+                while let Ok(0) = cx.shared.usb_class.lock(|k| k.write(report.as_bytes())) {}
+            }
         }
-        let report: KbHidReport = cx.shared.layout.keycodes().collect();
-        if !cx
-            .shared
-            .usb_class
-            .lock(|k| k.device_mut().set_keyboard_report(report.clone()))
-        {
-            return;
-        }
-        while let Ok(0) = cx.shared.usb_class.lock(|k| k.write(report.as_bytes())) {}
     }
 
     /// Receive USART events from other keyboard half and register them
-    #[task(binds = USART1, priority = 1, local = [serial_rx, serial_buf])]
+    #[task(binds = USART1, priority = 2, local = [serial_rx, serial_buf])]
     fn rx(cx: rx::Context) {
         // receive USART bytes and place into local buffer
         // if buffer is full (ends with '\n'), spawn event registration
@@ -330,14 +322,14 @@ mod app {
     }
 
     // USB events
-    #[task(binds = OTG_FS, priority = 2, shared = [usb_dev, usb_class])]
+    #[task(binds = OTG_FS, priority = 3, shared = [usb_dev, usb_class])]
     fn usb_tx(cx: usb_tx::Context) {
         (cx.shared.usb_dev, cx.shared.usb_class).lock(|mut usb_dev, mut usb_class| {
             usb_poll(&mut usb_dev, &mut usb_class);
         });
     }
 
-    #[task(binds = OTG_FS_WKUP, priority = 2, shared = [usb_dev, usb_class])]
+    #[task(binds = OTG_FS_WKUP, priority = 3, shared = [usb_dev, usb_class])]
     fn usb_rx(cx: usb_rx::Context) {
         (cx.shared.usb_dev, cx.shared.usb_class).lock(|mut usb_dev, mut usb_class| {
             usb_poll(&mut usb_dev, &mut usb_class);
