@@ -10,7 +10,7 @@ const TIMEOUT: u16 = 200;
 
 const SHIFT_SP: Action = HoldTap(&HoldTapAction {
     timeout: TIMEOUT,
-    tap_hold_interval: 0,
+    tap_hold_interval: 200,
     config: HoldTapConfig::Default,
     hold: k(LShift),
     tap: k(Space),
@@ -18,7 +18,7 @@ const SHIFT_SP: Action = HoldTap(&HoldTapAction {
 
 const CTRL_TAB: Action = HoldTap(&HoldTapAction {
     timeout: TIMEOUT,
-    tap_hold_interval: 0,
+    tap_hold_interval: 200,
     config: HoldTapConfig::Default,
     hold: k(LCtrl),
     tap: k(Tab),
@@ -26,7 +26,7 @@ const CTRL_TAB: Action = HoldTap(&HoldTapAction {
 
 const ALT_ENT: Action = HoldTap(&HoldTapAction {
     timeout: TIMEOUT,
-    tap_hold_interval: 0,
+    tap_hold_interval: 200,
     config: HoldTapConfig::Default,
     hold: k(LAlt),
     tap: k(Enter),
@@ -34,7 +34,7 @@ const ALT_ENT: Action = HoldTap(&HoldTapAction {
 
 const PPN: Action = HoldTap(&HoldTapAction {
     timeout: TIMEOUT,
-    tap_hold_interval: 0,
+    tap_hold_interval: 200,
     config: HoldTapConfig::Default,
     hold: k(MediaNextSong),
     tap: k(MediaPlayPause),
