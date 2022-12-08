@@ -54,9 +54,9 @@ macro_rules! a {
 #[rustfmt::skip]
 pub static LAYERS: keyberon::layout::Layers<12, 4, 5, ()> = keyberon::layout::layout! {
     {
-        [ J     Y     G     U     A     Q     W     B     D     L     Z       -  ],
-        [(1)    C     S     I     E     O     M     N     T     R     H      (1) ],
-        [LGui   V     X LBracket Quote  ;     P     F     ,     .     K      LGui],
+        [ J     Y     W     U     A     Q     P     F     M     L     Z       -  ],
+        [(1)    C     S     I     E     O     D     T     N     R     H      (1) ],
+        [LGui   V     X LBracket Quote  ;     B     G     ,     .     K      LGui],
         [ t     t t (2) LShift {CTRL_TAB} {ALT_ENT} {SHIFT_SP} (2) t  t      t   ],
     }{
         [ t {a!(E)}     {s!(Slash)} {a!(Kb8)}         {a!(Kb9)}      Grave          {s!(Kb1)}   NonUsBslash {s!(NonUsBslash)} {s!(Kb0)}       {s!(Kb6)}   {a!(Q)} ],
