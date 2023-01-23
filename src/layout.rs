@@ -65,8 +65,8 @@ pub static LAYERS: keyberon::layout::Layers<12, 4, 5, ()> = keyberon::layout::la
         [ t t           t           (3)               t              t              t           t           (3)               t               t           t],
     }{
         [ t  PgUp   BSpace Up   Delete PgDown n      Kb7 Kb8 Kb9 RBracket Slash],
-        [(3) Home   Left   Down Right  End    n      Kb4 Kb5 Kb6 Comma    {s!(RBracket)}],
-        [ t  Escape Tab    n    Enter  n      Kb0    Kb1 Kb2 Kb3 Dot      {s!(Kb7)}],
+        [(3) Home   Left   Down Right  End    n      Kb4 Kb5 Kb6 Dot      {s!(RBracket)}],
+        [ t  Escape Tab    n    Enter  n      Kb0    Kb1 Kb2 Kb3 Comma    {s!(Kb7)}],
         [ t  t      t      t    t      t      t      t   t   t   t        t],
     }{
         [{Custom(())}  n    n     n     VolUp    n   F12  F7  F8  F9  n  {Custom(())}],
