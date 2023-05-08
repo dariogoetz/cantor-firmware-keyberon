@@ -112,8 +112,8 @@ mod app {
             usb_global: cx.device.OTG_FS_GLOBAL,
             usb_device: cx.device.OTG_FS_DEVICE,
             usb_pwrclk: cx.device.OTG_FS_PWRCLK,
-            pin_dm: gpioa.pa11.into_alternate(),
-            pin_dp: gpioa.pa12.into_alternate(),
+            pin_dm: gpioa.pa11.into_alternate().into(),
+            pin_dp: gpioa.pa12.into_alternate().into(),
             hclk: clocks.hclk(),
         };
 
