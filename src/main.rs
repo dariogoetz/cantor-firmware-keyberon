@@ -187,7 +187,7 @@ mod app {
         let matrix = cortex_m::interrupt::free(move |_cs| DirectPinMatrix::new(matrix_pins));
 
         let mut layout = Layout::new(&layout::LAYERS);
-        layout.add_tri_state_layer((1, 2), 3);
+        layout.add_tri_layer((1, 2), 3);
 
         (
             Shared {
